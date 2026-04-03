@@ -1,0 +1,59 @@
+{
+  "common": {
+    "appName": "Watchlist",
+    "language": "Language",
+    "en": "EN",
+    "sr": "SR"
+  },
+  "validation": {
+    "allFieldsRequired": "All fields are required",
+    "passwordsMismatch": "Passwords do not match",
+    "passwordMinLength": "Password must be at least 6 characters"
+  },
+  "errors": {
+    "loginFailed": "Something went wrong while signing in",
+    "registerFailed": "Something went wrong while registering",
+    "emailTaken": "Email already registered",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Sign in to your account",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Register"
+  },
+  "register": {
+    "title": "Register",
+    "subtitle": "Create a new account",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "confirmPlaceholder": "Confirm password",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmLabel": "Confirm password",
+    "roleLabel": "Role",
+    "roleUser": "user",
+    "roleAdmin": "admin",
+    "submit": "Register",
+    "submitting": "Registering...",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "success": "Registration successful! Redirecting to sign in..."
+  },
+  "home": {
+    "welcome": "Welcome",
+    "signedInAs": "You are signed in as",
+    "rolePrefix": "Role:",
+    "roleUser": "user",
+    "roleAdmin": "admin",
+    "adminBadge": "Admin",
+    "logout": "Log out",
+    "placeholder": "Your watchlist will appear here soon."
+  }
+}

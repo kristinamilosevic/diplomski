@@ -1,35 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { authApi } from '../services/api';
 import { useNavigate } from 'react-router-dom';
+import LanguageSwitcher from './LanguageSwitcher';
+import { translateApiDetail } from '../utils/apiError';
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (authApi.isAuthenticated()) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // Validation
     if (!email || !password) {
-      setError('Sva polja su obavezna');
+      setError(t('validation.allFieldsRequired'));
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await authApi.login({ email, password });
-      // Redirect to home or dashboard after successful login
+      await authApi.login({ email, password });
       navigate('/');
     } catch (err: any) {
       if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
+        setError(translateApiDetail(err.response.data.detail, t, 'errors.loginFailed'));
       } else {
-        setError('Došlo je do greške pri prijavljivanju');
+        setError(t('errors.loginFailed'));
       }
     } finally {
       setLoading(false);
@@ -38,20 +46,21 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <LanguageSwitcher />
+      </div>
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-4xl font-extrabold text-orange-500 drop-shadow-lg">
-            Prijava
+            {t('login.title')}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Prijavi se na svoj nalog
-          </p>
+          <p className="mt-2 text-center text-sm text-gray-400">{t('login.subtitle')}</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-lg shadow-lg -space-y-px bg-gray-800 p-1">
             <div>
               <label htmlFor="email" className="sr-only">
-                Email
+                {t('login.emailLabel')}
               </label>
               <input
                 id="email"
@@ -60,14 +69,14 @@ const Login: React.FC = () => {
                 autoComplete="email"
                 required
                 className="appearance-none rounded-t-lg relative block w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all"
-                placeholder="Email adresa"
+                placeholder={t('login.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Lozinka
+                {t('login.passwordLabel')}
               </label>
               <input
                 id="password"
@@ -76,7 +85,7 @@ const Login: React.FC = () => {
                 autoComplete="current-password"
                 required
                 className="appearance-none rounded-b-lg relative block w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all"
-                placeholder="Lozinka"
+                placeholder={t('login.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -106,23 +115,23 @@ const Login: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Prijavljivanje...
+                  {t('login.submitting')}
                 </span>
               ) : (
-                'Prijavi se'
+                t('login.submit')
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-400">
-              Nemaš nalog?{' '}
+              {t('login.noAccount')}{' '}
               <button
                 type="button"
                 onClick={() => navigate('/register')}
                 className="font-medium text-orange-500 hover:text-orange-400 transition-colors"
               >
-                Registruj se
+                {t('login.registerLink')}
               </button>
             </p>
           </div>
@@ -133,4 +142,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

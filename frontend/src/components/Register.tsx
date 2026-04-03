@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { authApi } from '../services/api';
+import { authApi, UserRole } from '../services/api';
+import LanguageSwitcher from './LanguageSwitcher';
+import { translateApiDetail } from '../utils/apiError';
 
 const Register: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState<UserRole>('user');
+  const roleRef = useRef<UserRole>('user');
+
+  const toggleRole = () => {
+    const next: UserRole = roleRef.current === 'user' ? 'admin' : 'user';
+    roleRef.current = next;
+    setRole(next);
+  };
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,36 +29,38 @@ const Register: React.FC = () => {
     setSuccess('');
 
     if (!email || !password || !confirmPassword) {
-      setError('Sva polja su obavezna');
+      setError(t('validation.allFieldsRequired'));
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Lozinke se ne poklapaju');
+      setError(t('validation.passwordsMismatch'));
       return;
     }
 
     if (password.length < 6) {
-      setError('Lozinka mora imati najmanje 6 karaktera');
+      setError(t('validation.passwordMinLength'));
       return;
     }
 
     setLoading(true);
 
     try {
-      const user = await authApi.register({ email, password });
-      setSuccess(`Uspešno ste se registrovali! Preusmeravanje na prijavu...`);
+      await authApi.register({ email, password, role: roleRef.current });
+      setSuccess(t('register.success'));
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      roleRef.current = 'user';
+      setRole('user');
       setTimeout(() => {
         navigate('/login');
       }, 2000);
     } catch (err: any) {
       if (err.response?.data?.detail) {
-        setError(err.response.data.detail);
+        setError(translateApiDetail(err.response.data.detail, t));
       } else {
-        setError('Došlo je do greške pri registraciji');
+        setError(t('errors.registerFailed'));
       }
     } finally {
       setLoading(false);
@@ -55,20 +69,21 @@ const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+        <LanguageSwitcher />
+      </div>
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-4xl font-extrabold text-orange-500 drop-shadow-lg">
-            Registracija
+            {t('register.title')}
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Kreiraj novi nalog
-          </p>
+          <p className="mt-2 text-center text-sm text-gray-400">{t('register.subtitle')}</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-lg shadow-lg -space-y-px bg-gray-800 p-1">
+          <div className="rounded-lg shadow-lg border border-gray-700 bg-gray-800 overflow-hidden divide-y divide-gray-700">
             <div>
               <label htmlFor="email" className="sr-only">
-                Email
+                {t('register.emailLabel')}
               </label>
               <input
                 id="email"
@@ -76,15 +91,15 @@ const Register: React.FC = () => {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-t-lg relative block w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all"
-                placeholder="Email adresa"
+                className="appearance-none relative block w-full px-4 py-3 border-0 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm transition-all"
+                placeholder={t('register.emailPlaceholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="password" className="sr-only">
-                Lozinka
+                {t('register.passwordLabel')}
               </label>
               <input
                 id="password"
@@ -92,15 +107,15 @@ const Register: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none relative block w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all"
-                placeholder="Lozinka"
+                className="appearance-none relative block w-full px-4 py-3 border-0 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm transition-all"
+                placeholder={t('register.passwordPlaceholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
             <div>
               <label htmlFor="confirm-password" className="sr-only">
-                Potvrdi lozinku
+                {t('register.confirmLabel')}
               </label>
               <input
                 id="confirm-password"
@@ -108,11 +123,44 @@ const Register: React.FC = () => {
                 type="password"
                 autoComplete="new-password"
                 required
-                className="appearance-none rounded-b-lg relative block w-full px-4 py-3 border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm transition-all"
-                placeholder="Potvrdi lozinku"
+                className="appearance-none relative block w-full px-4 py-3 border-0 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500 sm:text-sm transition-all"
+                placeholder={t('register.confirmPlaceholder')}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+            </div>
+            <div className="p-1.5 bg-gray-900/50">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={role === 'admin'}
+                aria-label={t('register.roleLabel')}
+                onClick={toggleRole}
+                className="relative flex h-11 w-full cursor-pointer items-stretch rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800"
+              >
+                <span
+                  className={`pointer-events-none absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-md transition-transform duration-200 ease-out ${
+                    role === 'user'
+                      ? 'translate-x-0 bg-orange-500 shadow'
+                      : 'translate-x-full bg-amber-600 shadow'
+                  }`}
+                  aria-hidden
+                />
+                <span
+                  className={`relative z-10 flex flex-1 items-center justify-center text-sm font-semibold transition-colors ${
+                    role === 'user' ? 'text-white' : 'text-gray-500'
+                  }`}
+                >
+                  {t('register.roleUser')}
+                </span>
+                <span
+                  className={`relative z-10 flex flex-1 items-center justify-center text-sm font-semibold transition-colors ${
+                    role === 'admin' ? 'text-white' : 'text-gray-500'
+                  }`}
+                >
+                  {t('register.roleAdmin')}
+                </span>
+              </button>
             </div>
           </div>
 
@@ -150,23 +198,23 @@ const Register: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Registracija...
+                  {t('register.submitting')}
                 </span>
               ) : (
-                'Registruj se'
+                t('register.submit')
               )}
             </button>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-gray-400">
-              Već imaš nalog?{' '}
+              {t('register.hasAccount')}{' '}
               <button
                 type="button"
                 onClick={() => navigate('/login')}
                 className="font-medium text-orange-500 hover:text-orange-400 transition-colors"
               >
-                Prijavi se
+                {t('register.loginLink')}
               </button>
             </p>
           </div>
@@ -177,4 +225,3 @@ const Register: React.FC = () => {
 };
 
 export default Register;
-

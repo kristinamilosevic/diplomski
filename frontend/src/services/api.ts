@@ -20,6 +20,7 @@ api.interceptors.request.use((config) => {
 export interface RegisterData {
   email: string;
   password: string;
+  role: UserRole;
 }
 
 export interface LoginData {
@@ -27,9 +28,12 @@ export interface LoginData {
   password: string;
 }
 
+export type UserRole = 'user' | 'admin';
+
 export interface User {
   id: number;
   email: string;
+  role: UserRole;
 }
 
 export interface TokenResponse {
@@ -58,10 +62,23 @@ export const authApi = {
   },
   getCurrentUser: (): User | null => {
     const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+    if (!userStr) return null;
+    const u = JSON.parse(userStr) as User;
+    if (u.role != null && u.role !== 'admin' && u.role !== 'user') {
+      u.role = 'user';
+    }
+    return u;
   },
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem('token');
+  },
+  isAdmin: (): boolean => {
+    return authApi.getCurrentUser()?.role === 'admin';
+  },
+  fetchMe: async (): Promise<User> => {
+    const response = await api.get<User>('/auth/me');
+    localStorage.setItem('user', JSON.stringify(response.data));
+    return response.data;
   },
 };
 
