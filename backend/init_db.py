@@ -4,6 +4,7 @@ Run this once before starting the application.
 """
 from app.database import engine, Base
 from app.models.user import User
+from app.models.movie import Movie
 
 def init_db():
     """Create all database tables"""

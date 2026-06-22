@@ -33,8 +33,10 @@ frontend/yarn-error.log*
 
 # Environment variables
 .env
+.env.example
 .env.local
 .env.*.local
+backend/.env.example
 
 # IDE
 .vscode/
