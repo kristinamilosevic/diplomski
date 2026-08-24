@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.dependencies import get_db, require_admin
+from app.models.admin_movie import AdminMovie
 from app.models.movie import Movie
 from app.models.user import User
 from app.schemas.movie import (
@@ -20,29 +21,37 @@ router = APIRouter(prefix="/movies", tags=["movies"])
 async def add_movie(
     payload: MovieAddRequest,
     db: Session = Depends(get_db),
-    _: User = Depends(require_admin),
+    current_user: User = Depends(require_admin),
 ):
     imdb_id = payload.imdb_id.strip()
-    existing = db.query(Movie).filter(Movie.imdb_id == imdb_id).first()
-    if existing:
+    movie = db.query(Movie).filter(Movie.imdb_id == imdb_id).first()
+    if not movie:
+        data = omdb_service.get_movie_details(imdb_id=imdb_id)
+        details = MovieDetail.model_validate(data)
+        movie = Movie(
+            imdb_id=details.imdb_id,
+            title=details.title,
+            year=details.year,
+            poster=details.poster,
+            type=details.type,
+            genre=details.genre,
+            plot=details.plot,
+        )
+        db.add(movie)
+        db.flush()
+
+    already = (
+        db.query(AdminMovie)
+        .filter(AdminMovie.user_id == current_user.id, AdminMovie.movie_id == movie.id)
+        .first()
+    )
+    if already:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Movie already exists in the database",
+            detail="You already added this title",
         )
 
-    data = omdb_service.get_movie_details(imdb_id=imdb_id)
-    details = MovieDetail.model_validate(data)
-
-    movie = Movie(
-        imdb_id=details.imdb_id,
-        title=details.title,
-        year=details.year,
-        poster=details.poster,
-        type=details.type,
-        genre=details.genre,
-        plot=details.plot,
-    )
-    db.add(movie)
+    db.add(AdminMovie(user_id=current_user.id, movie_id=movie.id))
     db.commit()
     db.refresh(movie)
     return movie

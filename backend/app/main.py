@@ -1,8 +1,24 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.database import Base, engine
+from app.models.admin_movie import AdminMovie
+from app.models.movie import Movie
+from app.models.user import User
 from app.routers import auth, movies
 
-app = FastAPI(title="Diplomski API")
+_MODELS = (User, Movie, AdminMovie)
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+
+app = FastAPI(title="Diplomski API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,

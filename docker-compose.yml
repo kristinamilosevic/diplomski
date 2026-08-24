@@ -9,7 +9,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - ./database/data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -30,3 +30,6 @@ services:
     depends_on:
       database:
         condition: service_healthy
+
+volumes:
+  postgres_data:
