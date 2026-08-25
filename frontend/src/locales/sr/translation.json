@@ -46,14 +46,21 @@
     "loginLink": "Prijavi se",
     "success": "Uspešno ste se registrovali! Preusmeravanje na prijavu..."
   },
+  "nav": {
+    "movies": "Filmovi",
+    "manageMovies": "Upravljanje filmovima"
+  },
   "home": {
-    "welcome": "Dobrodošli",
-    "signedInAs": "Uspešno ste prijavljeni kao",
     "rolePrefix": "Uloga:",
     "roleUser": "korisnik",
     "roleAdmin": "admin",
     "adminBadge": "Admin",
     "logout": "Odjavi se",
-    "placeholder": "Ovde će uskoro biti vaša lista za gledanje."
+    "myMovies": "Filmovi koje ste dodali",
+    "allMovies": "Filmovi",
+    "loadingMovies": "Učitavanje filmova...",
+    "loadFailed": "Nije moguće učitati filmove.",
+    "emptyAdmin": "Još niste dodali nijedan naslov.",
+    "emptyUser": "Još nema dodatih filmova."
   }
 }

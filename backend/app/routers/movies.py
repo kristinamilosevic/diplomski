@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from app.dependencies import get_db, require_admin
+from app.dependencies import get_current_user, get_db, require_admin
 from app.models.admin_movie import AdminMovie
 from app.models.movie import Movie
 from app.models.user import User
@@ -55,6 +55,36 @@ async def add_movie(
     db.commit()
     db.refresh(movie)
     return movie
+
+
+@router.get("/mine", response_model=list[StoredMovie])
+async def list_my_movies(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin),
+):
+    """Titles this admin added. Other admins may have added the same imdb ids."""
+    return (
+        db.query(Movie)
+        .join(AdminMovie, AdminMovie.movie_id == Movie.id)
+        .filter(AdminMovie.user_id == current_user.id)
+        .order_by(AdminMovie.created_at.desc())
+        .all()
+    )
+
+
+@router.get("", response_model=list[StoredMovie])
+async def list_movies(
+    db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user),
+):
+    """Catalog of titles added by any admin. One row per movie even if several admins added it."""
+    return (
+        db.query(Movie)
+        .join(AdminMovie, AdminMovie.movie_id == Movie.id)
+        .distinct()
+        .order_by(Movie.created_at.desc())
+        .all()
+    )
 
 
 @router.get("/search", response_model=MovieSearchResponse, response_model_by_alias=False)

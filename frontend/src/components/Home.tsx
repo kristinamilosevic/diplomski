@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { authApi, User } from '../services/api';
-import LanguageSwitcher from './LanguageSwitcher';
+import { Navigate } from 'react-router-dom';
+import { authApi, moviesApi, StoredMovie, User } from '../services/api';
+import { PLACEHOLDER_POSTER } from '../utils/poster';
+import AppLayout from './AppLayout';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(() => authApi.getCurrentUser());
+  const [movies, setMovies] = useState<StoredMovie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const role = user?.role;
+  const isAdmin = role === 'admin';
 
   useEffect(() => {
     if (!authApi.isAuthenticated()) return;
@@ -18,73 +24,78 @@ const Home: React.FC = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if (!role) return undefined;
+
+    let cancelled = false;
+    setLoading(true);
+    setError('');
+
+    const request = role === 'admin' ? moviesApi.listMine() : moviesApi.listAll();
+    request
+      .then((data) => {
+        if (!cancelled) setMovies(data);
+      })
+      .catch(() => {
+        if (!cancelled) setError(t('home.loadFailed'));
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [role, t]);
+
   if (!authApi.isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
 
-  const handleLogout = () => {
-    authApi.logout();
-    navigate('/login', { replace: true });
-  };
-
   return (
-    <div className="min-h-screen flex flex-col bg-gray-900">
-      <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <h1 className="text-xl font-bold text-orange-500 shrink-0">{t('common.appName')}</h1>
-          </div>
-          <div className="flex items-center gap-3 shrink-0">
-            <LanguageSwitcher />
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-colors"
-            >
-              {t('home.logout')}
-            </button>
-          </div>
-        </div>
-      </header>
+    <AppLayout user={user}>
+      <h2 className="text-2xl font-bold text-white">
+        {isAdmin ? t('home.myMovies') : t('home.allMovies')}
+      </h2>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="max-w-lg w-full text-center space-y-6">
-          <h2 className="text-3xl font-extrabold text-white drop-shadow-lg">{t('home.welcome')}</h2>
-          <p className="text-gray-400 text-base leading-relaxed">
-            {t('home.signedInAs')}{' '}
-            <span className="text-orange-400 font-medium">{user?.email}</span>
-            {user?.role && (
-              <>
-                {' '}
-                <span className="text-gray-600" aria-hidden>
-                  ·
-                </span>{' '}
-                <span
-                  className={
-                    user.role === 'admin'
-                      ? 'text-amber-400/95 font-medium'
-                      : 'text-gray-400'
-                  }
-                >
-                  {t('home.rolePrefix')}{' '}
-                  {user.role === 'admin' ? t('home.roleAdmin') : t('home.roleUser')}
-                </span>
-              </>
-            )}
-          </p>
-          <p className="text-sm text-gray-500">{t('home.placeholder')}</p>
-          {user?.role === 'admin' && (
-            <button
-              type="button"
-              onClick={() => navigate('/admin/movies')}
-              className="inline-flex items-center justify-center rounded-lg bg-orange-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-orange-600 transition-colors"
-            >
-              Manage Movies
-            </button>
-          )}
+      {error && (
+        <div className="mt-6 rounded-lg border border-red-500/50 bg-red-900/30 px-4 py-3 text-red-300">
+          {error}
         </div>
-      </main>
-    </div>
+      )}
+
+      {loading && <p className="mt-6 text-gray-400">{t('home.loadingMovies')}</p>}
+
+      {!loading && !error && movies.length === 0 && (
+        <p className="mt-6 text-gray-500">
+          {isAdmin ? t('home.emptyAdmin') : t('home.emptyUser')}
+        </p>
+      )}
+
+      {!loading && movies.length > 0 && (
+        <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {movies.map((movie) => (
+            <li
+              key={movie.id}
+              className="overflow-hidden rounded-lg border border-gray-800 bg-gray-800/60"
+            >
+              <img
+                src={movie.poster || PLACEHOLDER_POSTER}
+                alt={movie.title}
+                className="h-64 w-full bg-gray-700 object-cover"
+                onError={(event) => {
+                  event.currentTarget.src = PLACEHOLDER_POSTER;
+                }}
+              />
+              <div className="p-3">
+                <p className="font-medium leading-snug text-white">{movie.title}</p>
+                <p className="mt-1 text-sm text-gray-400">{movie.year}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </AppLayout>
   );
 };
 

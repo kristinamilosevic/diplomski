@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { authApi } from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import LanguageSwitcher from './LanguageSwitcher';
+import AppHeader from './AppHeader';
 import { translateApiDetail } from '../utils/apiError';
 
 const Login: React.FC = () => {
@@ -45,13 +45,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-        <LanguageSwitcher />
-      </div>
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      <AppHeader />
+      <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-4xl font-extrabold text-orange-500 drop-shadow-lg">
+          <h2 className="text-center text-4xl font-extrabold text-orange-500 drop-shadow-lg">
             {t('login.title')}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-400">{t('login.subtitle')}</p>
@@ -137,6 +136,7 @@ const Login: React.FC = () => {
           </div>
         </form>
       </div>
+      </main>
     </div>
   );
 };

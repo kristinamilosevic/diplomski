@@ -63,4 +63,12 @@ export const moviesApi = {
     const response = await api.post<StoredMovie>('/movies/add', { imdb_id: imdbId });
     return response.data;
   },
+  listMine: async (): Promise<StoredMovie[]> => {
+    const response = await api.get<StoredMovie[]>('/movies/mine');
+    return response.data;
+  },
+  listAll: async (): Promise<StoredMovie[]> => {
+    const response = await api.get<StoredMovie[]>('/movies');
+    return response.data;
+  },
 };

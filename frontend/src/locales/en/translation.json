@@ -46,14 +46,21 @@
     "loginLink": "Sign in",
     "success": "Registration successful! Redirecting to sign in..."
   },
+  "nav": {
+    "movies": "Movies",
+    "manageMovies": "Manage movies"
+  },
   "home": {
-    "welcome": "Welcome",
-    "signedInAs": "You are signed in as",
     "rolePrefix": "Role:",
     "roleUser": "user",
     "roleAdmin": "admin",
     "adminBadge": "Admin",
     "logout": "Log out",
-    "placeholder": "Your watchlist will appear here soon."
+    "myMovies": "Movies you added",
+    "allMovies": "Movies",
+    "loadingMovies": "Loading movies...",
+    "loadFailed": "Could not load movies.",
+    "emptyAdmin": "You have not added any titles yet.",
+    "emptyUser": "No movies have been added yet."
   }
 }

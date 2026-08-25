@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { authApi, moviesApi } from '../services';
-
-const PLACEHOLDER_POSTER =
-  'data:image/svg+xml;utf8,' +
-  encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450" viewBox="0 0 300 450">' +
-      '<rect width="300" height="450" fill="#1f2937"/>' +
-      '<text x="50%" y="50%" fill="#9ca3af" font-family="sans-serif" font-size="18" text-anchor="middle">No poster</text>' +
-      '</svg>'
-  );
+import { PLACEHOLDER_POSTER } from '../utils/poster';
+import AppLayout from './AppLayout';
 
 const AdminMovies = () => {
-  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -21,7 +13,7 @@ const AdminMovies = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [addingId, setAddingId] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     if (!authApi.isAuthenticated()) {
@@ -31,11 +23,9 @@ const AdminMovies = () => {
 
     authApi
       .fetchMe()
-      .then((user) => {
-        setIsAdmin(user.role === 'admin');
-      })
+      .then(setUser)
       .catch(() => {
-        setIsAdmin(false);
+        setUser(null);
       })
       .finally(() => {
         setAuthChecked(true);
@@ -111,26 +101,15 @@ const AdminMovies = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (!isAdmin) {
+  if (user?.role !== 'admin') {
     return <Navigate to="/" replace />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-          <h1 className="text-xl font-bold text-orange-500">Admin — Add Movies</h1>
-          <button
-            type="button"
-            onClick={() => navigate('/')}
-            className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-colors"
-          >
-            Back to Home
-          </button>
-        </div>
-      </header>
+    <AppLayout user={user}>
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-white">Add Movies</h2>
 
-      <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
         <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
           <input
             type="text"
@@ -203,8 +182,8 @@ const AdminMovies = () => {
             ))}
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
