@@ -48,7 +48,8 @@
   },
   "nav": {
     "movies": "Filmovi",
-    "manageMovies": "Upravljanje filmovima"
+    "manageMovies": "Upravljanje filmovima",
+    "watchlist": "Lista za gledanje"
   },
   "home": {
     "rolePrefix": "Uloga:",
@@ -62,5 +63,47 @@
     "loadFailed": "Nije moguće učitati filmove.",
     "emptyAdmin": "Još niste dodali nijedan naslov.",
     "emptyUser": "Još nema dodatih filmova."
+  },
+  "watchlist": {
+    "title": "Moja lista",
+    "loading": "Učitavanje liste...",
+    "loadFailed": "Nije moguće učitati listu.",
+    "empty": "Još niste sačuvali nijedan film.",
+    "add": "Dodaj na listu",
+    "adding": "Dodavanje...",
+    "added": "Na listi",
+    "addTitle": "Dodaj na listu",
+    "addFailed": "Nije moguće dodati ovaj film.",
+    "cancel": "Otkaži",
+    "category": "Kategorija",
+    "rating": "Vaša ocena",
+    "ratingNone": "Bez ocene",
+    "note": "Beleška",
+    "notePlaceholder": "Opcione beleške o naslovu",
+    "noteEmpty": "Nema beleške",
+    "yourEntry": "Vaši podaci",
+    "edit": "Izmeni",
+    "save": "Sačuvaj",
+    "saving": "Čuvanje...",
+    "saveFailed": "Nije moguće sačuvati vaše podatke.",
+    "back": "Nazad na listu",
+    "detailFailed": "Nije moguće učitati ovu stavku.",
+    "categories": {
+      "watched": "Odgledano",
+      "want_to_watch": "Želim da gledam",
+      "currently_watching": "Trenutno gledam"
+    },
+    "fields": {
+      "genre": "Žanr",
+      "type": "Tip",
+      "runtime": "Trajanje",
+      "released": "Premijera",
+      "director": "Režija",
+      "actors": "Glumci",
+      "language": "Jezik",
+      "country": "Zemlja",
+      "imdbRating": "IMDb ocena",
+      "awards": "Nagrade"
+    }
   }
 }

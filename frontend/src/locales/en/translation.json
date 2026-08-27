@@ -48,7 +48,8 @@
   },
   "nav": {
     "movies": "Movies",
-    "manageMovies": "Manage movies"
+    "manageMovies": "Manage movies",
+    "watchlist": "Watchlist"
   },
   "home": {
     "rolePrefix": "Role:",
@@ -62,5 +63,47 @@
     "loadFailed": "Could not load movies.",
     "emptyAdmin": "You have not added any titles yet.",
     "emptyUser": "No movies have been added yet."
+  },
+  "watchlist": {
+    "title": "My watchlist",
+    "loading": "Loading watchlist...",
+    "loadFailed": "Could not load your watchlist.",
+    "empty": "You have not saved any movies yet.",
+    "add": "Add to watchlist",
+    "adding": "Adding...",
+    "added": "On watchlist",
+    "addTitle": "Add to watchlist",
+    "addFailed": "Could not add this movie.",
+    "cancel": "Cancel",
+    "category": "Category",
+    "rating": "Your rating",
+    "ratingNone": "No rating",
+    "note": "Note",
+    "notePlaceholder": "Optional thoughts about this title",
+    "noteEmpty": "No note",
+    "yourEntry": "Your details",
+    "edit": "Edit",
+    "save": "Save",
+    "saving": "Saving...",
+    "saveFailed": "Could not save your details.",
+    "back": "Back to watchlist",
+    "detailFailed": "Could not load this watchlist item.",
+    "categories": {
+      "watched": "Watched",
+      "want_to_watch": "Want to watch",
+      "currently_watching": "Currently watching"
+    },
+    "fields": {
+      "genre": "Genre",
+      "type": "Type",
+      "runtime": "Runtime",
+      "released": "Released",
+      "director": "Director",
+      "actors": "Actors",
+      "language": "Language",
+      "country": "Country",
+      "imdbRating": "IMDb rating",
+      "awards": "Awards"
+    }
   }
 }

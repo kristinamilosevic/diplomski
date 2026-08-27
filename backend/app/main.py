@@ -7,9 +7,10 @@ from app.database import Base, engine
 from app.models.admin_movie import AdminMovie
 from app.models.movie import Movie
 from app.models.user import User
-from app.routers import auth, movies
+from app.models.watchlist import UserWatchlist
+from app.routers import auth, movies, watchlist
 
-_MODELS = (User, Movie, AdminMovie)
+_MODELS = (User, Movie, AdminMovie, UserWatchlist)
 
 
 @asynccontextmanager
@@ -33,6 +34,7 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(movies.router)
+app.include_router(watchlist.router)
 
 @app.get("/")
 async def root():

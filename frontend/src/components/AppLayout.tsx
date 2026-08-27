@@ -31,6 +31,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children }) => {
             <NavLink to="/" end className={navLinkClass}>
               {t('nav.movies')}
             </NavLink>
+            {!isAdmin && (
+              <NavLink to="/watchlist" className={navLinkClass}>
+                {t('nav.watchlist')}
+              </NavLink>
+            )}
             {isAdmin && (
               <NavLink to="/admin/movies" className={navLinkClass}>
                 {t('nav.manageMovies')}

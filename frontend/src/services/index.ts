@@ -14,3 +14,11 @@ export type {
   MovieDetail,
   StoredMovie,
 } from './moviesApi';
+export { watchlistApi } from './watchlistApi';
+export type {
+  WatchlistCategory,
+  WatchlistAddPayload,
+  WatchlistUpdatePayload,
+  WatchlistItem,
+  WatchlistDetail,
+} from './watchlistApi';

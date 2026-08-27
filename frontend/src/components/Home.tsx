@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
-import { authApi, moviesApi, StoredMovie, User } from '../services/api';
+import {
+  authApi,
+  moviesApi,
+  StoredMovie,
+  User,
+  watchlistApi,
+} from '../services/api';
 import { PLACEHOLDER_POSTER } from '../utils/poster';
+import AddToWatchlistModal, { WatchlistFormValues } from './AddToWatchlistModal';
 import AppLayout from './AppLayout';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(() => authApi.getCurrentUser());
   const [movies, setMovies] = useState<StoredMovie[]>([]);
+  const [watchlistIds, setWatchlistIds] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [addingMovie, setAddingMovie] = useState<StoredMovie | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState('');
 
   const role = user?.role;
   const isAdmin = role === 'admin';
+  const isUser = role === 'user';
 
   useEffect(() => {
     if (!authApi.isAuthenticated()) return;
@@ -32,9 +44,13 @@ const Home: React.FC = () => {
     setError('');
 
     const request = role === 'admin' ? moviesApi.listMine() : moviesApi.listAll();
-    request
-      .then((data) => {
-        if (!cancelled) setMovies(data);
+    const extras = role === 'user' ? watchlistApi.list() : Promise.resolve([]);
+
+    Promise.all([request, extras])
+      .then(([data, watchlist]) => {
+        if (cancelled) return;
+        setMovies(data);
+        setWatchlistIds(new Set(watchlist.map((item) => item.movie_id)));
       })
       .catch(() => {
         if (!cancelled) setError(t('home.loadFailed'));
@@ -47,6 +63,29 @@ const Home: React.FC = () => {
       cancelled = true;
     };
   }, [role, t]);
+
+  const handleAdd = async (values: WatchlistFormValues) => {
+    if (!addingMovie) return;
+    setAdding(true);
+    setAddError('');
+
+    try {
+      const rating = values.rating ? Number(values.rating) : null;
+      await watchlistApi.add({
+        movie_id: addingMovie.id,
+        category: values.category,
+        rating,
+        note: values.note.trim() || null,
+      });
+      setWatchlistIds((current) => new Set(current).add(addingMovie.id));
+      setAddingMovie(null);
+    } catch (err: unknown) {
+      const detail = (err as { response?: { data?: { detail?: unknown } } }).response?.data?.detail;
+      setAddError(typeof detail === 'string' ? detail : t('watchlist.addFailed'));
+    } finally {
+      setAdding(false);
+    }
+  };
 
   if (!authApi.isAuthenticated()) {
     return <Navigate to="/login" replace />;
@@ -74,26 +113,56 @@ const Home: React.FC = () => {
 
       {!loading && movies.length > 0 && (
         <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          {movies.map((movie) => (
-            <li
-              key={movie.id}
-              className="overflow-hidden rounded-lg border border-gray-800 bg-gray-800/60"
-            >
-              <img
-                src={movie.poster || PLACEHOLDER_POSTER}
-                alt={movie.title}
-                className="h-64 w-full bg-gray-700 object-cover"
-                onError={(event) => {
-                  event.currentTarget.src = PLACEHOLDER_POSTER;
-                }}
-              />
-              <div className="p-3">
-                <p className="font-medium leading-snug text-white">{movie.title}</p>
-                <p className="mt-1 text-sm text-gray-400">{movie.year}</p>
-              </div>
-            </li>
-          ))}
+          {movies.map((movie) => {
+            const saved = watchlistIds.has(movie.id);
+            return (
+              <li
+                key={movie.id}
+                className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-800/60"
+              >
+                <img
+                  src={movie.poster || PLACEHOLDER_POSTER}
+                  alt={movie.title}
+                  className="h-64 w-full bg-gray-700 object-cover"
+                  onError={(event) => {
+                    event.currentTarget.src = PLACEHOLDER_POSTER;
+                  }}
+                />
+                <div className="flex flex-1 flex-col gap-3 p-3">
+                  <div className="flex-1">
+                    <p className="font-medium leading-snug text-white">{movie.title}</p>
+                    <p className="mt-1 text-sm text-gray-400">{movie.year}</p>
+                  </div>
+                  {isUser && (
+                    <button
+                      type="button"
+                      disabled={saved}
+                      onClick={() => {
+                        setAddError('');
+                        setAddingMovie(movie);
+                      }}
+                      className="w-full rounded-lg bg-orange-500 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-400"
+                    >
+                      {saved ? t('watchlist.added') : t('watchlist.add')}
+                    </button>
+                  )}
+                </div>
+              </li>
+            );
+          })}
         </ul>
+      )}
+
+      {addingMovie && (
+        <AddToWatchlistModal
+          title={addingMovie.title}
+          submitting={adding}
+          error={addError}
+          onClose={() => {
+            if (!adding) setAddingMovie(null);
+          }}
+          onSubmit={handleAdd}
+        />
       )}
     </AppLayout>
   );
