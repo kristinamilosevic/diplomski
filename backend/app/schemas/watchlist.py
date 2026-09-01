@@ -11,13 +11,13 @@ WatchlistCategory = Literal["watched", "want_to_watch", "currently_watching"]
 class WatchlistAddRequest(BaseModel):
     movie_id: int
     category: WatchlistCategory
-    rating: int | None = Field(default=None, ge=1, le=10)
+    rating: int | None = Field(default=None, ge=1, le=5)
     note: str | None = Field(default=None, max_length=2000)
 
 
 class WatchlistUpdateRequest(BaseModel):
     category: WatchlistCategory
-    rating: int | None = Field(default=None, ge=1, le=10)
+    rating: int | None = Field(default=None, ge=1, le=5)
     note: str | None = Field(default=None, max_length=2000)
 
 

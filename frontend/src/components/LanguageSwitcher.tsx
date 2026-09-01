@@ -12,32 +12,21 @@ const LanguageSwitcher: React.FC<{ className?: string }> = ({ className = '' }) 
   const active = (lng: AppLanguage) =>
     i18n.resolvedLanguage === lng || i18n.language.startsWith(lng);
 
+  const buttonClass = (lng: AppLanguage) =>
+    `rounded px-2 py-1 text-xs font-medium transition-colors sm:text-sm ${
+      active(lng) ? 'bg-orange-600 text-white' : 'text-gray-400 hover:text-gray-200'
+    }`;
+
   return (
     <div
-      className={`inline-flex rounded-md border border-gray-600 bg-gray-800/80 p-0.5 text-xs font-medium ${className}`}
+      className={`inline-flex items-center gap-0.5 rounded-md border border-ink-700 bg-ink-850 p-0.5 ${className}`}
       role="group"
       aria-label={t('common.language')}
     >
-      <button
-        type="button"
-        onClick={() => setLang('en')}
-        className={`rounded px-2 py-1 transition-colors ${
-          active('en')
-            ? 'bg-orange-500/90 text-white'
-            : 'text-gray-400 hover:text-gray-200'
-        }`}
-      >
+      <button type="button" onClick={() => setLang('en')} className={buttonClass('en')}>
         {t('common.en')}
       </button>
-      <button
-        type="button"
-        onClick={() => setLang('sr')}
-        className={`rounded px-2 py-1 transition-colors ${
-          active('sr')
-            ? 'bg-orange-500/90 text-white'
-            : 'text-gray-400 hover:text-gray-200'
-        }`}
-      >
+      <button type="button" onClick={() => setLang('sr')} className={buttonClass('sr')}>
         {t('common.sr')}
       </button>
     </div>

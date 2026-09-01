@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { authApi, User, watchlistApi, WatchlistItem } from '../services/api';
-import { PLACEHOLDER_POSTER } from '../utils/poster';
 import AppLayout from './AppLayout';
+import CategoryBadge from './ui/CategoryBadge';
+import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
+import StarRating from './ui/StarRating';
 
 const Watchlist: React.FC = () => {
   const { t } = useTranslation();
@@ -53,44 +55,47 @@ const Watchlist: React.FC = () => {
 
   return (
     <AppLayout user={user}>
-      <h2 className="text-2xl font-bold text-white">{t('watchlist.title')}</h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="page-title">{t('watchlist.title')}</h2>
+        {!loading && items.length > 0 && (
+          <span className="rounded-full border border-ink-700 bg-ink-900 px-2.5 py-0.5 text-sm text-gray-400 sm:text-base">
+            {items.length}
+          </span>
+        )}
+      </div>
 
       {error && (
-        <div className="mt-6 rounded-lg border border-red-500/50 bg-red-900/30 px-4 py-3 text-red-300">
+        <div className="mt-5 rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300 sm:text-base">
           {error}
         </div>
       )}
 
-      {loading && <p className="mt-6 text-gray-400">{t('watchlist.loading')}</p>}
+      {loading && (
+        <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {Array.from({ length: 5 }, (_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
 
       {!loading && !error && items.length === 0 && (
-        <p className="mt-6 text-gray-500">{t('watchlist.empty')}</p>
+        <p className="panel mt-6 px-4 py-12 text-center text-sm text-gray-400 sm:text-base">
+          {t('watchlist.empty')}
+        </p>
       )}
 
       {!loading && items.length > 0 && (
-        <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <ul className="mt-6 grid animate-fade-in grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {items.map((item) => (
-            <li key={item.id}>
-              <Link
+            <li key={item.id} className="flex">
+              <MovieCard
                 to={`/watchlist/${item.movie_id}`}
-                className="block overflow-hidden rounded-lg border border-gray-800 bg-gray-800/60 transition-colors hover:border-orange-500/60"
-              >
-                <img
-                  src={item.movie.poster || PLACEHOLDER_POSTER}
-                  alt={item.movie.title}
-                  className="h-64 w-full bg-gray-700 object-cover"
-                  onError={(event) => {
-                    event.currentTarget.src = PLACEHOLDER_POSTER;
-                  }}
-                />
-                <div className="p-3">
-                  <p className="font-medium leading-snug text-white">{item.movie.title}</p>
-                  <p className="mt-1 text-sm text-gray-400">{item.movie.year}</p>
-                  <p className="mt-1 text-xs text-orange-400">
-                    {t(`watchlist.categories.${item.category}`)}
-                  </p>
-                </div>
-              </Link>
+                poster={item.movie.poster}
+                title={item.movie.title}
+                year={item.movie.year}
+                badge={<CategoryBadge category={item.category} />}
+                meta={item.rating != null ? <StarRating value={item.rating} /> : undefined}
+              />
             </li>
           ))}
         </ul>

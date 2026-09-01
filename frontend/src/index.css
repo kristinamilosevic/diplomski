@@ -1,3 +1,112 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 100%;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      font-size: 106.25%;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    html {
+      font-size: 112.5%;
+    }
+  }
+
+  @media (min-width: 1920px) {
+    html {
+      font-size: 118.75%;
+    }
+  }
+
+  body {
+    @apply bg-ink-950 text-gray-200 antialiased;
+    background-image: linear-gradient(180deg, #12161d 0%, #0a0c10 45%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-orange-500/25 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-ink-700;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-600;
+  }
+
+  input,
+  textarea,
+  select {
+    color-scheme: dark;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+    caret-color: #ffffff;
+    border-color: #2b3240;
+    box-shadow: 0 0 0 1000px #161a21 inset;
+    transition: background-color 99999s ease-out;
+  }
+}
+
+@layer components {
+  .field {
+    @apply w-full rounded-lg border border-ink-700 bg-ink-850 px-3 py-2 text-base font-normal
+      text-white placeholder-gray-500 transition-colors focus:border-orange-500 focus:outline-none
+      focus:ring-1 focus:ring-orange-500 md:py-2.5;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm
+      font-medium text-white shadow-soft transition-colors hover:bg-orange-500
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500
+      focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950
+      disabled:cursor-not-allowed disabled:bg-ink-700 disabled:text-gray-400 disabled:shadow-none
+      sm:text-base md:py-2.5;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-ink-700 px-4 py-2
+      text-sm font-medium text-gray-300 transition-colors hover:bg-ink-800 hover:text-white
+      disabled:opacity-50 sm:text-base md:py-2.5;
+  }
+
+  .panel {
+    @apply rounded-xl border border-ink-700 bg-ink-900 shadow-soft;
+  }
+
+  .page-title {
+    @apply text-2xl font-semibold tracking-tight text-white sm:text-3xl;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-300 sm:text-base;
+  }
+
+  .field-hint {
+    @apply text-xs uppercase tracking-wide text-gray-500 sm:text-sm;
+  }
+}

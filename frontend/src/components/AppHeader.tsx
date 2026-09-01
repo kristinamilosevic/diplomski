@@ -15,17 +15,20 @@ const AppHeader: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <header className="border-b border-gray-800 bg-gray-900/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between gap-4 px-4 py-4 sm:px-6">
-        <h1 className="text-xl font-bold text-orange-500 shrink-0">{t('common.appName')}</h1>
-        <div className="flex items-center gap-3 shrink-0">
+    <header className="sticky top-0 z-30 border-b border-ink-700 bg-ink-900/85 backdrop-blur">
+      <div className="flex items-center justify-between gap-4 px-4 py-3 sm:px-6 md:py-3.5">
+        <h1 className="shrink-0 text-lg font-semibold tracking-tight text-orange-500 sm:text-xl">
+          {t('common.appName')}
+        </h1>
+
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {children}
           <LanguageSwitcher />
           {isAuthenticated && (
             <button
               type="button"
               onClick={handleLogout}
-              className="text-sm font-medium text-gray-400 hover:text-orange-400 transition-colors"
+              className="rounded-lg px-2 py-1 text-sm font-medium text-gray-400 transition-colors hover:bg-ink-800 hover:text-orange-400 sm:text-base"
             >
               {t('home.logout')}
             </button>

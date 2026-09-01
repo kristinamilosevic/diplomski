@@ -51,6 +51,20 @@
     "manageMovies": "Upravljanje filmovima",
     "watchlist": "Lista za gledanje"
   },
+  "admin": {
+    "addMovies": "Dodaj filmove",
+    "hint": "Pretražite OMDb i sačuvajte naslove u zajedničkom katalogu.",
+    "searchPlaceholder": "Pretraži filmove po naslovu...",
+    "search": "Pretraži",
+    "searching": "Pretraga...",
+    "searchFailed": "Pretraga filmova nije uspela.",
+    "noResults": "Nema rezultata za \"{{query}}\".",
+    "add": "Dodaj",
+    "adding": "Dodavanje...",
+    "added": "\"{{title}}\" je dodat u katalog.",
+    "addFailed": "Nije moguće dodati film.",
+    "loading": "Učitavanje..."
+  },
   "home": {
     "rolePrefix": "Uloga:",
     "roleUser": "korisnik",
@@ -88,6 +102,12 @@
     "saveFailed": "Nije moguće sačuvati vaše podatke.",
     "back": "Nazad na listu",
     "detailFailed": "Nije moguće učitati ovu stavku.",
+    "storyline": "Sadržaj",
+    "credits": "Ekipa i glumci",
+    "noPlot": "Opis za ovaj naslov nije dostupan.",
+    "imdbLink": "Prikaži na IMDb-u",
+    "imdbVotes": "glasova",
+    "savedOn": "Sačuvano {{date}}",
     "categories": {
       "watched": "Odgledano",
       "want_to_watch": "Želim da gledam",
@@ -99,11 +119,15 @@
       "runtime": "Trajanje",
       "released": "Premijera",
       "director": "Režija",
+      "writer": "Scenario",
       "actors": "Glumci",
       "language": "Jezik",
       "country": "Zemlja",
       "imdbRating": "IMDb ocena",
-      "awards": "Nagrade"
+      "awards": "Nagrade",
+      "rated": "Uzrasna oznaka",
+      "boxOffice": "Zarada",
+      "production": "Produkcija"
     }
   }
 }

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import { authApi, moviesApi } from '../services';
-import { PLACEHOLDER_POSTER } from '../utils/poster';
 import AppLayout from './AppLayout';
+import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
 
 const AdminMovies = () => {
+  const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [hasSearched, setHasSearched] = useState(false);
@@ -60,7 +62,7 @@ const AdminMovies = () => {
     } catch (err) {
       setResults([]);
       const detail = err.response?.data?.detail;
-      setError(typeof detail === 'string' ? detail : 'Failed to search movies.');
+      setError(typeof detail === 'string' ? detail : t('admin.searchFailed'));
     } finally {
       setLoading(false);
     }
@@ -72,18 +74,11 @@ const AdminMovies = () => {
     setAddingId(imdbId);
 
     try {
-      const added = await moviesApi.add(imdbId);
-      const addedAt = added.created_at
-        ? new Date(added.created_at).toLocaleString()
-        : null;
-      setSuccessMessage(
-        addedAt
-          ? `"${title}" was added to the database (${addedAt}).`
-          : `"${title}" was added to the database.`
-      );
+      await moviesApi.add(imdbId);
+      setSuccessMessage(t('admin.added', { title }));
     } catch (err) {
       const detail = err.response?.data?.detail;
-      setError(typeof detail === 'string' ? detail : 'Failed to add movie.');
+      setError(typeof detail === 'string' ? detail : t('admin.addFailed'));
     } finally {
       setAddingId(null);
     }
@@ -91,8 +86,8 @@ const AdminMovies = () => {
 
   if (!authChecked) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-400">
-        Loading...
+      <div className="flex min-h-screen items-center justify-center text-sm text-gray-400 sm:text-base">
+        {t('admin.loading')}
       </div>
     );
   }
@@ -107,82 +102,71 @@ const AdminMovies = () => {
 
   return (
     <AppLayout user={user}>
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-white">Add Movies</h2>
+      <h2 className="page-title">{t('admin.addMovies')}</h2>
+      <p className="mt-2 max-w-[65ch] text-sm text-gray-400 sm:text-base">{t('admin.hint')}</p>
 
-        <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="text"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search movies by title..."
-            className="flex-1 rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-          <button
-            type="submit"
-            disabled={loading || !query.trim()}
-            className="rounded-lg bg-orange-500 px-6 py-3 font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Searching...' : 'Search'}
-          </button>
-        </form>
+      <form onSubmit={handleSearch} className="mt-5 flex max-w-3xl flex-col gap-3 sm:flex-row">
+        <input
+          type="text"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={t('admin.searchPlaceholder')}
+          className="field flex-1"
+        />
+        <button type="submit" disabled={loading || !query.trim()} className="btn-primary px-6">
+          {loading ? t('admin.searching') : t('admin.search')}
+        </button>
+      </form>
 
-        {error && (
-          <div className="rounded-lg border border-red-500/50 bg-red-900/30 px-4 py-3 text-red-300">
-            {error}
-          </div>
-        )}
+      {error && (
+        <div className="mt-5 rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300 sm:text-base">
+          {error}
+        </div>
+      )}
 
-        {successMessage && (
-          <div className="rounded-lg border border-green-500/50 bg-green-900/30 px-4 py-3 text-green-300">
-            {successMessage}
-          </div>
-        )}
+      {successMessage && (
+        <div className="mt-5 animate-fade-in rounded-lg border border-emerald-800 bg-emerald-950 px-4 py-3 text-sm text-emerald-300 sm:text-base">
+          {successMessage}
+        </div>
+      )}
 
-        {loading && (
-          <div className="text-center text-gray-400 py-12">Searching movies...</div>
-        )}
+      {loading && (
+        <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {Array.from({ length: 5 }, (_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
 
-        {!loading && hasSearched && results.length === 0 && (
-          <div className="text-center text-gray-400 py-12">
-            No movies found for &quot;{query.trim()}&quot;.
-          </div>
-        )}
+      {!loading && hasSearched && results.length === 0 && (
+        <p className="panel mt-6 px-4 py-12 text-center text-sm text-gray-400 sm:text-base">
+          {t('admin.noResults', { query: query.trim() })}
+        </p>
+      )}
 
-        {!loading && results.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {results.map((movie) => (
-              <article
-                key={movie.imdb_id}
-                className="rounded-lg border border-gray-800 bg-gray-800/60 overflow-hidden flex flex-col"
-              >
-                <img
-                  src={movie.poster || PLACEHOLDER_POSTER}
-                  alt={movie.title}
-                  className="w-full h-72 object-cover bg-gray-700"
-                  onError={(event) => {
-                    event.currentTarget.src = PLACEHOLDER_POSTER;
-                  }}
-                />
-                <div className="p-4 flex flex-col flex-1 gap-3">
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-white leading-snug">{movie.title}</h2>
-                    <p className="text-sm text-gray-400 mt-1">{movie.year}</p>
-                  </div>
+      {!loading && results.length > 0 && (
+        <ul className="mt-6 grid animate-fade-in grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {results.map((movie) => (
+            <li key={movie.imdb_id} className="flex">
+              <MovieCard
+                poster={movie.poster}
+                title={movie.title}
+                year={movie.year}
+                action={
                   <button
                     type="button"
                     onClick={() => handleAdd(movie.imdb_id, movie.title)}
                     disabled={addingId === movie.imdb_id}
-                    className="w-full rounded-lg bg-orange-500 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-50 transition-colors"
+                    className="btn-primary w-full"
                   >
-                    {addingId === movie.imdb_id ? 'Adding...' : 'Add'}
+                    {addingId === movie.imdb_id ? t('admin.adding') : t('admin.add')}
                   </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </AppLayout>
   );
 };

@@ -8,9 +8,9 @@ import {
   User,
   watchlistApi,
 } from '../services/api';
-import { PLACEHOLDER_POSTER } from '../utils/poster';
 import AddToWatchlistModal, { WatchlistFormValues } from './AddToWatchlistModal';
 import AppLayout from './AppLayout';
+import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
@@ -93,60 +93,65 @@ const Home: React.FC = () => {
 
   return (
     <AppLayout user={user}>
-      <h2 className="text-2xl font-bold text-white">
-        {isAdmin ? t('home.myMovies') : t('home.allMovies')}
-      </h2>
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="page-title">{isAdmin ? t('home.myMovies') : t('home.allMovies')}</h2>
+        {!loading && movies.length > 0 && (
+          <span className="rounded-full border border-ink-700 bg-ink-900 px-2.5 py-0.5 text-sm text-gray-400 sm:text-base">
+            {movies.length}
+          </span>
+        )}
+      </div>
 
       {error && (
-        <div className="mt-6 rounded-lg border border-red-500/50 bg-red-900/30 px-4 py-3 text-red-300">
+        <div className="mt-5 rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300 sm:text-base">
           {error}
         </div>
       )}
 
-      {loading && <p className="mt-6 text-gray-400">{t('home.loadingMovies')}</p>}
+      {loading && (
+        <div className="mt-6 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {Array.from({ length: 12 }, (_, index) => (
+            <MovieCardSkeleton key={index} />
+          ))}
+        </div>
+      )}
 
       {!loading && !error && movies.length === 0 && (
-        <p className="mt-6 text-gray-500">
+        <p className="panel mt-6 px-4 py-12 text-center text-sm text-gray-400 sm:text-base">
           {isAdmin ? t('home.emptyAdmin') : t('home.emptyUser')}
         </p>
       )}
 
       {!loading && movies.length > 0 && (
-        <ul className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <ul className="mt-6 grid animate-fade-in grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
           {movies.map((movie) => {
             const saved = watchlistIds.has(movie.id);
             return (
-              <li
-                key={movie.id}
-                className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-800/60"
-              >
-                <img
-                  src={movie.poster || PLACEHOLDER_POSTER}
-                  alt={movie.title}
-                  className="h-64 w-full bg-gray-700 object-cover"
-                  onError={(event) => {
-                    event.currentTarget.src = PLACEHOLDER_POSTER;
-                  }}
+              <li key={movie.id} className="flex">
+                <MovieCard
+                  poster={movie.poster}
+                  title={movie.title}
+                  year={movie.year}
+                  action={
+                    isUser ? (
+                      <button
+                        type="button"
+                        disabled={saved}
+                        onClick={() => {
+                          setAddError('');
+                          setAddingMovie(movie);
+                        }}
+                        className={
+                          saved
+                            ? 'w-full rounded-lg border border-ink-700 bg-ink-850 py-2 text-sm text-gray-400 sm:text-base md:py-2.5'
+                            : 'btn-primary w-full'
+                        }
+                      >
+                        {saved ? t('watchlist.added') : t('watchlist.add')}
+                      </button>
+                    ) : undefined
+                  }
                 />
-                <div className="flex flex-1 flex-col gap-3 p-3">
-                  <div className="flex-1">
-                    <p className="font-medium leading-snug text-white">{movie.title}</p>
-                    <p className="mt-1 text-sm text-gray-400">{movie.year}</p>
-                  </div>
-                  {isUser && (
-                    <button
-                      type="button"
-                      disabled={saved}
-                      onClick={() => {
-                        setAddError('');
-                        setAddingMovie(movie);
-                      }}
-                      className="w-full rounded-lg bg-orange-500 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:cursor-not-allowed disabled:bg-gray-700 disabled:text-gray-400"
-                    >
-                      {saved ? t('watchlist.added') : t('watchlist.add')}
-                    </button>
-                  )}
-                </div>
               </li>
             );
           })}

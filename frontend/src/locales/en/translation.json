@@ -51,6 +51,20 @@
     "manageMovies": "Manage movies",
     "watchlist": "Watchlist"
   },
+  "admin": {
+    "addMovies": "Add movies",
+    "hint": "Search OMDb and store titles in the shared catalog.",
+    "searchPlaceholder": "Search movies by title...",
+    "search": "Search",
+    "searching": "Searching...",
+    "searchFailed": "Failed to search movies.",
+    "noResults": "No movies found for \"{{query}}\".",
+    "add": "Add",
+    "adding": "Adding...",
+    "added": "\"{{title}}\" was added to the catalog.",
+    "addFailed": "Failed to add movie.",
+    "loading": "Loading..."
+  },
   "home": {
     "rolePrefix": "Role:",
     "roleUser": "user",
@@ -88,6 +102,12 @@
     "saveFailed": "Could not save your details.",
     "back": "Back to watchlist",
     "detailFailed": "Could not load this watchlist item.",
+    "storyline": "Storyline",
+    "credits": "Cast & crew",
+    "noPlot": "No description available for this title.",
+    "imdbLink": "View on IMDb",
+    "imdbVotes": "votes",
+    "savedOn": "Saved {{date}}",
     "categories": {
       "watched": "Watched",
       "want_to_watch": "Want to watch",
@@ -99,11 +119,15 @@
       "runtime": "Runtime",
       "released": "Released",
       "director": "Director",
-      "actors": "Actors",
+      "writer": "Writer",
+      "actors": "Cast",
       "language": "Language",
       "country": "Country",
       "imdbRating": "IMDb rating",
-      "awards": "Awards"
+      "awards": "Awards",
+      "rated": "Rated",
+      "boxOffice": "Box office",
+      "production": "Production"
     }
   }
 }
