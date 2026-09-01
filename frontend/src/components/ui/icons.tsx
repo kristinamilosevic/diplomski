@@ -88,6 +88,13 @@ export const LogoutIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   </svg>
 );
 
+export const SearchIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+    <circle cx="11" cy="11" r="6.5" />
+    <path d="m16 16 4 4" strokeLinecap="round" />
+  </svg>
+);
+
 export const ExternalLinkIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
     <path

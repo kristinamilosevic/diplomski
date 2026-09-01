@@ -10,6 +10,7 @@ import {
 } from '../services/api';
 import AddToWatchlistModal, { WatchlistFormValues } from './AddToWatchlistModal';
 import AppLayout from './AppLayout';
+import TitleSearch from './TitleSearch';
 import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
 
 const Home: React.FC = () => {
@@ -22,6 +23,7 @@ const Home: React.FC = () => {
   const [addingMovie, setAddingMovie] = useState<StoredMovie | null>(null);
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState('');
+  const [query, setQuery] = useState('');
 
   const role = user?.role;
   const isAdmin = role === 'admin';
@@ -91,16 +93,23 @@ const Home: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
+  const trimmedQuery = query.trim().toLowerCase();
+  const visibleMovies = trimmedQuery
+    ? movies.filter((movie) => movie.title.toLowerCase().includes(trimmedQuery))
+    : movies;
+
   return (
     <AppLayout user={user}>
       <div className="flex items-center justify-between gap-3">
         <h2 className="page-title">{isAdmin ? t('home.myMovies') : t('home.allMovies')}</h2>
         {!loading && movies.length > 0 && (
           <span className="rounded-full border border-ink-700 bg-ink-900 px-2.5 py-0.5 text-sm text-gray-400 sm:text-base">
-            {movies.length}
+            {visibleMovies.length}
           </span>
         )}
       </div>
+
+      {!loading && movies.length > 0 && <TitleSearch value={query} onChange={setQuery} />}
 
       {error && (
         <div className="mt-5 rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300 sm:text-base">
@@ -122,9 +131,15 @@ const Home: React.FC = () => {
         </p>
       )}
 
-      {!loading && movies.length > 0 && (
+      {!loading && movies.length > 0 && visibleMovies.length === 0 && (
+        <p className="panel mt-6 px-4 py-12 text-center text-sm text-gray-400 sm:text-base">
+          {t('common.noSearchResults', { query: query.trim() })}
+        </p>
+      )}
+
+      {!loading && visibleMovies.length > 0 && (
         <ul className="mt-6 grid animate-fade-in grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {movies.map((movie) => {
+          {visibleMovies.map((movie) => {
             const saved = watchlistIds.has(movie.id);
             return (
               <li key={movie.id} className="flex">

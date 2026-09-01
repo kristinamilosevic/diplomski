@@ -3,7 +3,9 @@
     "appName": "Watchlist",
     "language": "Language",
     "en": "EN",
-    "sr": "SR"
+    "sr": "SR",
+    "searchPlaceholder": "Search by title...",
+    "noSearchResults": "No titles match \"{{query}}\"."
   },
   "validation": {
     "allFieldsRequired": "All fields are required",

@@ -3,7 +3,9 @@
     "appName": "Watchlist",
     "language": "Jezik",
     "en": "EN",
-    "sr": "SR"
+    "sr": "SR",
+    "searchPlaceholder": "Pretraži po naslovu...",
+    "noSearchResults": "Nema naslova za \"{{query}}\"."
   },
   "validation": {
     "allFieldsRequired": "Sva polja su obavezna",
