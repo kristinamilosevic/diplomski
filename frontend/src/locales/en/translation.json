@@ -14,7 +14,9 @@
     "loginFailed": "Something went wrong while signing in",
     "registerFailed": "Something went wrong while registering",
     "emailTaken": "Email already registered",
-    "invalidCredentials": "Invalid email or password"
+    "invalidCredentials": "Invalid email or password",
+    "wrongPassword": "Current password is incorrect",
+    "passwordChangeFailed": "Could not change the password"
   },
   "login": {
     "title": "Sign in",
@@ -77,6 +79,21 @@
     "loadFailed": "Could not load movies.",
     "emptyAdmin": "You have not added any titles yet.",
     "emptyUser": "No movies have been added yet."
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "role": "Role",
+    "changePassword": "Change password",
+    "changePasswordQuestion": "Want to change your password?",
+    "changePasswordYes": "Yes",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "savePassword": "Update password",
+    "saving": "Updating...",
+    "passwordChanged": "Password updated.",
+    "cancel": "Cancel"
   },
   "watchlist": {
     "title": "My watchlist",

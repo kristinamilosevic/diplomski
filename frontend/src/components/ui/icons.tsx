@@ -71,6 +71,23 @@ export const CalendarIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   </svg>
 );
 
+export const UserIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+    <circle cx="12" cy="8.5" r="3.2" />
+    <path d="M5.5 19.2c.8-3.2 3.3-5.2 6.5-5.2s5.7 2 6.5 5.2" strokeLinecap="round" />
+  </svg>
+);
+
+export const LogoutIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+    <path
+      d="M10 5.5H6.5A2 2 0 0 0 4.5 7.5v9a2 2 0 0 0 2 2H10M10 12h9.5M16.5 8.5 20 12l-3.5 3.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 export const ExternalLinkIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
     <path

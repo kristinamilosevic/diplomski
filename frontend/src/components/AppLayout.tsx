@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { User } from '../services/api';
 import AppHeader from './AppHeader';
+import LanguageSwitcher from './LanguageSwitcher';
 import { BookmarkIcon, FilmIcon, PlusIcon } from './ui/icons';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -20,30 +21,13 @@ interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = ({ user, children }) => {
   const { t } = useTranslation();
   const isAdmin = user?.role === 'admin';
-  const initial = user?.email?.charAt(0).toUpperCase() ?? '?';
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex h-screen flex-col overflow-hidden">
       <AppHeader />
 
-      <div className="flex w-full flex-1 flex-col md:flex-row">
-        <aside className="border-b border-ink-700 px-3 py-4 md:w-40 md:shrink-0 md:border-b-0 md:border-r md:py-5 lg:w-44 xl:w-48">
-          <div className="mb-5 flex items-center gap-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink-800 text-xs font-semibold text-orange-400">
-              {initial}
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-white" title={user?.email}>
-                {user?.email}
-              </p>
-              {user?.role && (
-                <p className="text-xs text-gray-500">
-                  {isAdmin ? t('home.roleAdmin') : t('home.roleUser')}
-                </p>
-              )}
-            </div>
-          </div>
-
+      <div className="flex min-h-0 w-full flex-1 flex-col md:flex-row">
+        <aside className="flex shrink-0 flex-col border-b border-ink-700 px-3 py-4 md:w-40 md:overflow-y-auto md:border-b-0 md:border-r md:py-5 lg:w-44 xl:w-48">
           <nav className="space-y-1">
             <NavLink to="/" end className={navLinkClass}>
               <FilmIcon className="h-4 w-4 shrink-0 xl:h-[1.125rem] xl:w-[1.125rem]" />
@@ -62,9 +46,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ user, children }) => {
               </NavLink>
             )}
           </nav>
+          <div className="mt-4 md:mt-auto md:pt-5">
+            <LanguageSwitcher />
+          </div>
         </aside>
 
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <main className="min-w-0 flex-1 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">
           <div className="mx-auto w-full max-w-[110rem]">{children}</div>
         </main>
       </div>

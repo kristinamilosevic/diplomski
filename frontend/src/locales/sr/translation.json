@@ -14,7 +14,9 @@
     "loginFailed": "Došlo je do greške pri prijavljivanju",
     "registerFailed": "Došlo je do greške pri registraciji",
     "emailTaken": "Email je već registrovan",
-    "invalidCredentials": "Pogrešan email ili lozinka"
+    "invalidCredentials": "Pogrešan email ili lozinka",
+    "wrongPassword": "Trenutna lozinka nije tačna",
+    "passwordChangeFailed": "Nije moguće promeniti lozinku"
   },
   "login": {
     "title": "Prijava",
@@ -77,6 +79,21 @@
     "loadFailed": "Nije moguće učitati filmove.",
     "emptyAdmin": "Još niste dodali nijedan naslov.",
     "emptyUser": "Još nema dodatih filmova."
+  },
+  "profile": {
+    "title": "Profil",
+    "name": "Ime",
+    "role": "Uloga",
+    "changePassword": "Promena lozinke",
+    "changePasswordQuestion": "Želite da promenite lozinku?",
+    "changePasswordYes": "Da",
+    "currentPassword": "Trenutna lozinka",
+    "newPassword": "Nova lozinka",
+    "confirmPassword": "Potvrdi novu lozinku",
+    "savePassword": "Sačuvaj lozinku",
+    "saving": "Čuvanje...",
+    "passwordChanged": "Lozinka je ažurirana.",
+    "cancel": "Otkaži"
   },
   "watchlist": {
     "title": "Moja lista",

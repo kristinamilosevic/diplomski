@@ -26,3 +26,8 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     user: UserOut
+
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str = Field(..., min_length=6)

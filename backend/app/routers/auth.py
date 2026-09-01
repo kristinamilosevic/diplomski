@@ -4,7 +4,7 @@ import logging
 from datetime import timedelta
 from app.dependencies import get_db, get_current_user, require_admin
 from app.models.user import User
-from app.schemas.user import UserCreate, UserOut, UserLogin, Token
+from app.schemas.user import ChangePasswordRequest, UserCreate, UserOut, UserLogin, Token
 from app.utils.password import hash_password, verify_password
 from app.utils.jwt import create_access_token
 
@@ -84,6 +84,21 @@ async def login(user_data: UserLogin, db: Session = Depends(get_db)):
 async def me(current_user: User = Depends(get_current_user)):
     """Current user (from Bearer token); use to refresh role after changes."""
     return current_user
+
+
+@router.patch("/password", status_code=status.HTTP_204_NO_CONTENT)
+async def change_password(
+    payload: ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    if not verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+    current_user.hashed_password = hash_password(payload.new_password)
+    db.commit()
 
 @router.get("/users", response_model=list[UserOut])
 async def get_users(

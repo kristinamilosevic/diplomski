@@ -63,4 +63,10 @@ export const authApi = {
     localStorage.setItem('user', JSON.stringify(response.data));
     return response.data;
   },
+  changePassword: async (currentPassword: string, newPassword: string): Promise<void> => {
+    await api.patch('/auth/password', {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+  },
 };

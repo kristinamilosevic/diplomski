@@ -7,6 +7,7 @@ import Home from './components/Home';
 import AdminMovies from './components/AdminMovies';
 import Watchlist from './components/Watchlist';
 import WatchlistDetail from './components/WatchlistDetail';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/watchlist" element={<Watchlist />} />
           <Route path="/watchlist/:movieId" element={<WatchlistDetail />} />
           <Route path="/admin/movies" element={<AdminMovies />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
