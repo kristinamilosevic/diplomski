@@ -5,7 +5,23 @@
     "en": "EN",
     "sr": "SR",
     "searchPlaceholder": "Search by title...",
-    "noSearchResults": "No titles match \"{{query}}\"."
+    "noSearchResults": "No titles match \"{{query}}\".",
+    "noFilterResults": "No movies match the current search and filters.",
+    "filter": "Filters",
+    "genre": "Genre",
+    "allGenres": "All genres",
+    "clearFilters": "Clear all",
+    "sort": "Sort",
+    "type": "Type",
+    "allTypes": "All types",
+    "sorts": {
+      "added": "Recently added",
+      "year_desc": "Year · newest",
+      "year_asc": "Year · oldest",
+      "rating_desc": "Rating · high to low",
+      "rating_asc": "Rating · low to high",
+      "title_asc": "Title A–Z"
+    }
   },
   "validation": {
     "allFieldsRequired": "All fields are required",

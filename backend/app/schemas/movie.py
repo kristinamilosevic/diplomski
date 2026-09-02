@@ -56,6 +56,7 @@ class StoredMovie(BaseModel):
     type: str | None = None
     genre: str | None = None
     plot: str | None = None
+    imdb_rating: str | None = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

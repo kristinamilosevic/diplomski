@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router-dom';
 import {
@@ -8,8 +8,17 @@ import {
   User,
   watchlistApi,
 } from '../services/api';
+import {
+  EMPTY_MOVIE_FILTERS,
+  collectGenres,
+  collectTypes,
+  movieMatchesFilters,
+  movieMatchesTitle,
+  sortMovies,
+} from '../utils/movieFilters';
 import AddToWatchlistModal, { WatchlistFormValues } from './AddToWatchlistModal';
 import AppLayout from './AppLayout';
+import MovieFilterBar from './MovieFilterBar';
 import TitleSearch from './TitleSearch';
 import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
 
@@ -24,6 +33,8 @@ const Home: React.FC = () => {
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState('');
   const [query, setQuery] = useState('');
+  const [filters, setFilters] = useState(EMPTY_MOVIE_FILTERS);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const role = user?.role;
   const isAdmin = role === 'admin';
@@ -89,14 +100,18 @@ const Home: React.FC = () => {
     }
   };
 
+  const genres = useMemo(() => collectGenres(movies), [movies]);
+  const types = useMemo(() => collectTypes(movies), [movies]);
+  const visibleMovies = sortMovies(
+    movies.filter(
+      (movie) => movieMatchesTitle(movie, query) && movieMatchesFilters(movie, filters),
+    ),
+    filters.sort,
+  );
+
   if (!authApi.isAuthenticated()) {
     return <Navigate to="/login" replace />;
   }
-
-  const trimmedQuery = query.trim().toLowerCase();
-  const visibleMovies = trimmedQuery
-    ? movies.filter((movie) => movie.title.toLowerCase().includes(trimmedQuery))
-    : movies;
 
   return (
     <AppLayout user={user}>
@@ -109,7 +124,18 @@ const Home: React.FC = () => {
         )}
       </div>
 
-      {!loading && movies.length > 0 && <TitleSearch value={query} onChange={setQuery} />}
+      {!loading && movies.length > 0 && (
+        <MovieFilterBar
+          filters={filters}
+          onChange={setFilters}
+          open={filtersOpen}
+          onToggle={() => setFiltersOpen((open) => !open)}
+          genres={genres}
+          types={types}
+        >
+          <TitleSearch value={query} onChange={setQuery} />
+        </MovieFilterBar>
+      )}
 
       {error && (
         <div className="mt-5 rounded-lg border border-red-800 bg-red-950 px-4 py-3 text-sm text-red-300 sm:text-base">
@@ -133,7 +159,9 @@ const Home: React.FC = () => {
 
       {!loading && movies.length > 0 && visibleMovies.length === 0 && (
         <p className="panel mt-6 px-4 py-12 text-center text-sm text-gray-400 sm:text-base">
-          {t('common.noSearchResults', { query: query.trim() })}
+          {query.trim()
+            ? t('common.noSearchResults', { query: query.trim() })
+            : t('common.noFilterResults')}
         </p>
       )}
 

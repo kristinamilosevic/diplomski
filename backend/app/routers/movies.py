@@ -36,6 +36,7 @@ async def add_movie(
             type=details.type,
             genre=details.genre,
             plot=details.plot,
+            imdb_rating=details.imdb_rating,
         )
         db.add(movie)
         db.flush()

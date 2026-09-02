@@ -95,6 +95,12 @@ export const SearchIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   </svg>
 );
 
+export const FilterIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+    <path d="M4.5 6.5h15M7.5 12h9M10 17.5h4" strokeLinecap="round" />
+  </svg>
+);
+
 export const ExternalLinkIcon: React.FC<IconProps> = ({ className = DEFAULT }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
     <path

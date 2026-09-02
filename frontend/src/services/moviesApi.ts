@@ -45,6 +45,7 @@ export interface StoredMovie {
   type: string | null;
   genre: string | null;
   plot: string | null;
+  imdb_rating: string | null;
   created_at: string;
 }
 

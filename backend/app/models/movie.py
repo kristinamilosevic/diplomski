@@ -16,4 +16,5 @@ class Movie(Base):
     type = Column(String(20), nullable=True)
     genre = Column(String, nullable=True)
     plot = Column(Text, nullable=True)
+    imdb_rating = Column(String(8), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

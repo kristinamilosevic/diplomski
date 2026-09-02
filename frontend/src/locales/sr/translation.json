@@ -5,7 +5,23 @@
     "en": "EN",
     "sr": "SR",
     "searchPlaceholder": "Pretraži po naslovu...",
-    "noSearchResults": "Nema naslova za \"{{query}}\"."
+    "noSearchResults": "Nema naslova za \"{{query}}\".",
+    "noFilterResults": "Nijedan film ne odgovara trenutnoj pretrazi i filterima.",
+    "filter": "Filteri",
+    "genre": "Žanr",
+    "allGenres": "Svi žanrovi",
+    "clearFilters": "Poništi sve",
+    "sort": "Sortiranje",
+    "type": "Tip",
+    "allTypes": "Svi tipovi",
+    "sorts": {
+      "added": "Najnovije dodato",
+      "year_desc": "Godina · najnovije",
+      "year_asc": "Godina · najstarije",
+      "rating_desc": "Ocena · od najviše",
+      "rating_asc": "Ocena · od najniže",
+      "title_asc": "Naslov A–Z"
+    }
   },
   "validation": {
     "allFieldsRequired": "Sva polja su obavezna",
