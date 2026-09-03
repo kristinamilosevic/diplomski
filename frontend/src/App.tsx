@@ -6,7 +6,7 @@ import Register from './components/Register';
 import Home from './components/Home';
 import AdminMovies from './components/AdminMovies';
 import Watchlist from './components/Watchlist';
-import WatchlistDetail from './components/WatchlistDetail';
+import MovieDetailPage from './components/MovieDetailPage';
 import Profile from './components/Profile';
 
 function App() {
@@ -15,8 +15,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/movies/:movieId" element={<MovieDetailPage />} />
           <Route path="/watchlist" element={<Watchlist />} />
-          <Route path="/watchlist/:movieId" element={<WatchlistDetail />} />
           <Route path="/admin/movies" element={<AdminMovies />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />

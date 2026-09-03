@@ -49,6 +49,11 @@ export interface StoredMovie {
   created_at: string;
 }
 
+export interface CatalogMovieDetail {
+  movie: StoredMovie;
+  details: MovieDetail | null;
+}
+
 export const moviesApi = {
   search: async (query: string, page = 1): Promise<MovieSearchResponse> => {
     const response = await api.get<MovieSearchResponse>('/movies/search', {
@@ -70,6 +75,10 @@ export const moviesApi = {
   },
   listAll: async (): Promise<StoredMovie[]> => {
     const response = await api.get<StoredMovie[]>('/movies');
+    return response.data;
+  },
+  getCatalog: async (movieId: number): Promise<CatalogMovieDetail> => {
+    const response = await api.get<CatalogMovieDetail>(`/movies/catalog/${movieId}`);
     return response.data;
   },
 };

@@ -6,6 +6,7 @@ from app.models.admin_movie import AdminMovie
 from app.models.movie import Movie
 from app.models.user import User
 from app.schemas.movie import (
+    CatalogMovieDetail,
     MovieAddRequest,
     MovieDetail,
     MovieSearchItem,
@@ -99,6 +100,24 @@ async def search_movies(
         results=results,
         total=int(data.get("totalResults", 0)),
     )
+
+
+@router.get("/catalog/{movie_id}", response_model=CatalogMovieDetail)
+async def get_catalog_movie(
+    movie_id: int,
+    db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user),
+):
+    movie = (
+        db.query(Movie)
+        .join(AdminMovie, AdminMovie.movie_id == Movie.id)
+        .filter(Movie.id == movie_id)
+        .first()
+    )
+    if not movie:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Movie not found")
+    details = MovieDetail.model_validate(omdb_service.get_movie_details(imdb_id=movie.imdb_id))
+    return CatalogMovieDetail(movie=movie, details=details)
 
 
 @router.get("/{imdb_id}", response_model=MovieDetail, response_model_by_alias=False)

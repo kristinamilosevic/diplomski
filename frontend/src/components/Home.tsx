@@ -172,6 +172,7 @@ const Home: React.FC = () => {
             return (
               <li key={movie.id} className="flex">
                 <MovieCard
+                  to={`/movies/${movie.id}`}
                   poster={movie.poster}
                   title={movie.title}
                   year={movie.year}

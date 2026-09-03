@@ -60,3 +60,8 @@ class StoredMovie(BaseModel):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CatalogMovieDetail(BaseModel):
+    movie: StoredMovie
+    details: MovieDetail | None = None

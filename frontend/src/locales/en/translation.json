@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "Watchlist",
+    "back": "Back",
     "language": "Language",
     "en": "EN",
     "sr": "SR",
@@ -96,7 +97,8 @@
     "loadingMovies": "Loading movies...",
     "loadFailed": "Could not load movies.",
     "emptyAdmin": "You have not added any titles yet.",
-    "emptyUser": "No movies have been added yet."
+    "emptyUser": "No movies have been added yet.",
+    "detailFailed": "Could not load this title."
   },
   "profile": {
     "title": "Profile",
@@ -135,8 +137,6 @@
     "save": "Save",
     "saving": "Saving...",
     "saveFailed": "Could not save your details.",
-    "back": "Back to watchlist",
-    "detailFailed": "Could not load this watchlist item.",
     "storyline": "Storyline",
     "credits": "Cast & crew",
     "noPlot": "No description available for this title.",

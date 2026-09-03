@@ -13,6 +13,7 @@ export type {
   MovieSearchResponse,
   MovieDetail,
   StoredMovie,
+  CatalogMovieDetail,
 } from './moviesApi';
 export { watchlistApi } from './watchlistApi';
 export type {

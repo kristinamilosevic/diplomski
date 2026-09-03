@@ -104,7 +104,7 @@ const Watchlist: React.FC = () => {
           {visibleItems.map((item) => (
             <li key={item.id} className="flex">
               <MovieCard
-                to={`/watchlist/${item.movie_id}`}
+                to={`/movies/${item.movie_id}`}
                 poster={item.movie.poster}
                 title={item.movie.title}
                 year={item.movie.year}

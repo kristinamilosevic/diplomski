@@ -1,6 +1,7 @@
 {
   "common": {
     "appName": "Watchlist",
+    "back": "Nazad",
     "language": "Jezik",
     "en": "EN",
     "sr": "SR",
@@ -96,7 +97,8 @@
     "loadingMovies": "Učitavanje filmova...",
     "loadFailed": "Nije moguće učitati filmove.",
     "emptyAdmin": "Još niste dodali nijedan naslov.",
-    "emptyUser": "Još nema dodatih filmova."
+    "emptyUser": "Još nema dodatih filmova.",
+    "detailFailed": "Nije moguće učitati ovaj naslov."
   },
   "profile": {
     "title": "Profil",
@@ -135,8 +137,6 @@
     "save": "Sačuvaj",
     "saving": "Čuvanje...",
     "saveFailed": "Nije moguće sačuvati vaše podatke.",
-    "back": "Nazad na listu",
-    "detailFailed": "Nije moguće učitati ovu stavku.",
     "storyline": "Sadržaj",
     "credits": "Ekipa i glumci",
     "noPlot": "Opis za ovaj naslov nije dostupan.",
