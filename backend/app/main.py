@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -10,6 +11,7 @@ from app.models.movie import Movie
 from app.models.user import User
 from app.models.watchlist import UserWatchlist
 from app.routers import auth, movies, watchlist
+from app.seed import seed_database
 
 _MODELS = (User, Movie, AdminMovie, UserWatchlist)
 
@@ -27,6 +29,10 @@ async def lifespan(_app: FastAPI):
                 "ON movies USING hnsw (embedding vector_cosine_ops)"
             )
         )
+    try:
+        seed_database()
+    except Exception:
+        logging.getLogger(__name__).exception("Database seed failed")
     yield
 
 
