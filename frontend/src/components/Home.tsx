@@ -19,6 +19,7 @@ import {
 import AddToWatchlistModal, { WatchlistFormValues } from './AddToWatchlistModal';
 import AppLayout from './AppLayout';
 import MovieFilterBar from './MovieFilterBar';
+import MovieRecommendationChat from './MovieRecommendationChat';
 import TitleSearch from './TitleSearch';
 import MovieCard, { MovieCardSkeleton } from './ui/MovieCard';
 
@@ -201,6 +202,8 @@ const Home: React.FC = () => {
           })}
         </ul>
       )}
+
+      {isUser && <MovieRecommendationChat />}
 
       {addingMovie && (
         <AddToWatchlistModal

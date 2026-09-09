@@ -47,6 +47,11 @@ class MovieAddRequest(BaseModel):
     imdb_id: str = Field(..., min_length=1)
 
 
+class MovieRecommendationRequest(BaseModel):
+    query: str = Field(..., min_length=3, max_length=500)
+    limit: int = Field(default=5, ge=1, le=10)
+
+
 class StoredMovie(BaseModel):
     id: int
     imdb_id: str

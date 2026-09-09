@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, DateTime, Integer, String, Text
 
 from app.database import Base
@@ -17,4 +18,5 @@ class Movie(Base):
     genre = Column(String, nullable=True)
     plot = Column(Text, nullable=True)
     imdb_rating = Column(String(8), nullable=True)
+    embedding = Column(Vector(768), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

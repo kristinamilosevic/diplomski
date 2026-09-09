@@ -164,5 +164,18 @@
       "boxOffice": "Zarada",
       "production": "Produkcija"
     }
+  },
+  "recommendations": {
+    "title": "Preporuke filmova",
+    "subtitle": "Semantička pretraga",
+    "open": "Otvori preporuke filmova",
+    "close": "Zatvori preporuke filmova",
+    "greeting": "Opišite šta želite da gledate i pronaći ću najsličnije naslove u katalogu.",
+    "placeholder": "npr. Emotivan SF film o svemiru",
+    "send": "Pošalji",
+    "thinking": "Tražim najbolje rezultate...",
+    "results": "Ovi naslovi odgovaraju vašem opisu:",
+    "noResults": "Još nema odgovarajućih naslova.",
+    "error": "Nije moguće dobiti preporuke. Pokušajte ponovo."
   }
 }

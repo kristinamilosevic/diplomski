@@ -164,5 +164,18 @@
       "boxOffice": "Box office",
       "production": "Production"
     }
+  },
+  "recommendations": {
+    "title": "Movie recommendations",
+    "subtitle": "Powered by semantic search",
+    "open": "Open movie recommendations",
+    "close": "Close movie recommendations",
+    "greeting": "Describe what you feel like watching and I’ll find the closest matches in the catalog.",
+    "placeholder": "e.g. Emotional sci-fi about space",
+    "send": "Send",
+    "thinking": "Finding the best matches...",
+    "results": "These titles match your description:",
+    "noResults": "No matching titles are available yet.",
+    "error": "Could not get recommendations. Please try again."
   }
 }

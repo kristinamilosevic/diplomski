@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.database import Base, engine
 from app.models.admin_movie import AdminMovie
@@ -15,7 +16,17 @@ _MODELS = (User, Movie, AdminMovie, UserWatchlist)
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    with engine.begin() as connection:
+        connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
     Base.metadata.create_all(bind=engine)
+    with engine.begin() as connection:
+        connection.execute(text("ALTER TABLE movies ADD COLUMN IF NOT EXISTS embedding vector(768)"))
+        connection.execute(
+            text(
+                "CREATE INDEX IF NOT EXISTS movies_embedding_idx "
+                "ON movies USING hnsw (embedding vector_cosine_ops)"
+            )
+        )
     yield
 
 

@@ -81,4 +81,11 @@ export const moviesApi = {
     const response = await api.get<CatalogMovieDetail>(`/movies/catalog/${movieId}`);
     return response.data;
   },
+  recommend: async (query: string, limit = 5): Promise<StoredMovie[]> => {
+    const response = await api.post<StoredMovie[]>('/movies/recommend', {
+      query: query.trim(),
+      limit,
+    });
+    return response.data;
+  },
 };

@@ -9,10 +9,12 @@ from app.schemas.movie import (
     CatalogMovieDetail,
     MovieAddRequest,
     MovieDetail,
+    MovieRecommendationRequest,
     MovieSearchItem,
     MovieSearchResponse,
     StoredMovie,
 )
+from app.services.embedding_service import embedding_service
 from app.services.omdb_service import omdb_service
 
 router = APIRouter(prefix="/movies", tags=["movies"])
@@ -38,9 +40,16 @@ async def add_movie(
             genre=details.genre,
             plot=details.plot,
             imdb_rating=details.imdb_rating,
+            embedding=embedding_service.embed_movie(
+                details.title,
+                details.genre,
+                details.plot,
+            ),
         )
         db.add(movie)
         db.flush()
+    elif movie.embedding is None:
+        movie.embedding = embedding_service.embed_movie(movie.title, movie.genre, movie.plot)
 
     already = (
         db.query(AdminMovie)
@@ -99,6 +108,27 @@ async def search_movies(
     return MovieSearchResponse(
         results=results,
         total=int(data.get("totalResults", 0)),
+    )
+
+
+@router.post("/recommend", response_model=list[StoredMovie])
+async def recommend_movies(
+    payload: MovieRecommendationRequest,
+    db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user),
+):
+    query_embedding = embedding_service.embed_query(payload.query.strip())
+    is_in_catalog = (
+        db.query(AdminMovie)
+        .filter(AdminMovie.movie_id == Movie.id)
+        .exists()
+    )
+    return (
+        db.query(Movie)
+        .filter(Movie.embedding.is_not(None), is_in_catalog)
+        .order_by(Movie.embedding.cosine_distance(query_embedding))
+        .limit(payload.limit)
+        .all()
     )
 
 

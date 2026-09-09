@@ -1,6 +1,6 @@
 services:
   database:
-    image: postgres:15-alpine
+    image: pgvector/pgvector:pg15
     container_name: watchlist_db
     environment:
       POSTGRES_USER: postgres
@@ -25,8 +25,11 @@ services:
       - ./backend/.env
     environment:
       DATABASE_URL: postgresql+psycopg2://postgres:postgres@database:5432/watchlist
+      HF_HOME: /root/.cache/huggingface
     ports:
       - "8000:8000"
+    volumes:
+      - ${HOME}/.cache/huggingface:/root/.cache/huggingface
     depends_on:
       database:
         condition: service_healthy
