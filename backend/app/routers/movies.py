@@ -7,6 +7,8 @@ from app.models.movie import Movie
 from app.models.user import User
 from app.schemas.movie import (
     CatalogMovieDetail,
+    ChatRecommendRequest,
+    ChatRecommendResponse,
     MovieAddRequest,
     MovieDetail,
     MovieRecommendationRequest,
@@ -15,7 +17,9 @@ from app.schemas.movie import (
     StoredMovie,
 )
 from app.services.embedding_service import embedding_service
+from app.services.llm_service import parse_recommend_filters
 from app.services.omdb_service import omdb_service
+from app.services.recommend_query_service import apply_catalog_filters, reply_for_results
 
 router = APIRouter(prefix="/movies", tags=["movies"])
 
@@ -129,6 +133,21 @@ async def recommend_movies(
         .order_by(Movie.embedding.cosine_distance(query_embedding))
         .limit(payload.limit)
         .all()
+    )
+
+
+@router.post("/recommend/chat", response_model=ChatRecommendResponse)
+async def recommend_movies_chat(
+    payload: ChatRecommendRequest,
+    db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user),
+):
+    filters = parse_recommend_filters(payload.messages)
+    movies = apply_catalog_filters(db, filters)
+    return ChatRecommendResponse(
+        reply=reply_for_results(filters, len(movies)),
+        filters=filters,
+        movies=movies,
     )
 
 

@@ -14,6 +14,8 @@ export {
   type MovieDetail,
   type StoredMovie,
   type CatalogMovieDetail,
+  type ChatRecommendMessage,
+  type ChatRecommendResponse,
 } from './moviesApi';
 export {
   watchlistApi,

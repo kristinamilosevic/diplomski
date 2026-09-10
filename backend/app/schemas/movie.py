@@ -1,6 +1,7 @@
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class MovieSearchItem(BaseModel):
@@ -52,6 +53,41 @@ class MovieRecommendationRequest(BaseModel):
     limit: int = Field(default=5, ge=1, le=10)
 
 
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(..., min_length=1, max_length=500)
+
+
+class ChatRecommendRequest(BaseModel):
+    messages: list[ChatMessage] = Field(..., min_length=1, max_length=8)
+
+
+class ChatRecommendFilters(BaseModel):
+    limit: int = Field(default=5, ge=1, le=10)
+    genres: list[str] = Field(default_factory=list)
+    exclude_genres: list[str] = Field(default_factory=list)
+    type: str | None = None
+    min_rating: float | None = Field(default=None, ge=0, le=10)
+    year_from: int | None = Field(default=None, ge=1880, le=2100)
+    year_to: int | None = Field(default=None, ge=1880, le=2100)
+    sort: Literal["rating_desc", "year_desc", "year_asc", "relevance"] = "rating_desc"
+    semantic_query: str | None = Field(default=None, max_length=300)
+
+    @field_validator("type", "semantic_query", mode="before")
+    @classmethod
+    def empty_to_none(cls, value: object) -> object:
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @field_validator("genres", "exclude_genres", mode="before")
+    @classmethod
+    def drop_blank_genres(cls, value: object) -> object:
+        if not isinstance(value, list):
+            return value
+        return [item for item in value if isinstance(item, str) and item.strip()]
+
+
 class StoredMovie(BaseModel):
     id: int
     imdb_id: str
@@ -70,3 +106,9 @@ class StoredMovie(BaseModel):
 class CatalogMovieDetail(BaseModel):
     movie: StoredMovie
     details: MovieDetail | None = None
+
+
+class ChatRecommendResponse(BaseModel):
+    reply: str
+    filters: ChatRecommendFilters
+    movies: list[StoredMovie]

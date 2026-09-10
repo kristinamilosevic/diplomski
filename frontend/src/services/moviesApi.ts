@@ -54,6 +54,16 @@ export interface CatalogMovieDetail {
   details: MovieDetail | null;
 }
 
+export interface ChatRecommendMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ChatRecommendResponse {
+  reply: string;
+  movies: StoredMovie[];
+}
+
 export const moviesApi = {
   search: async (query: string, page = 1): Promise<MovieSearchResponse> => {
     const response = await api.get<MovieSearchResponse>('/movies/search', {
@@ -85,6 +95,12 @@ export const moviesApi = {
     const response = await api.post<StoredMovie[]>('/movies/recommend', {
       query: query.trim(),
       limit,
+    });
+    return response.data;
+  },
+  recommendChat: async (messages: ChatRecommendMessage[]): Promise<ChatRecommendResponse> => {
+    const response = await api.post<ChatRecommendResponse>('/movies/recommend/chat', {
+      messages,
     });
     return response.data;
   },
